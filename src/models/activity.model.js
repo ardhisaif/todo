@@ -2,7 +2,7 @@ const models = {}
 const db = require('../database/connection')
 
 
-models.getAllActivity = async () => {
+models.getAllActivity = async (activity_group_id) => {
     return new Promise((resolve, reject) => {
         db.query(`SELECT * FROM activities`,
             (err, results) => {
@@ -14,12 +14,11 @@ models.getAllActivity = async () => {
 }
 
 models.getActivityByID = async (id) => {
-    console.log(id);
     return new Promise((resolve, reject) => {
         db.query(`SELECT * FROM activities WHERE activity_id=?`, [ id ],
             (err, results) => {
                 if (err) return reject(err);
-                return resolve(results);
+                return resolve(results[0]);
             }
         )
     })
@@ -30,8 +29,7 @@ models.addActivity = async ({title, email}) => {
         db.query(`INSERT INTO activities (title, email) VALUES(?, ?)`, [ title, email ],
             (err, results) => {
                 if (err) return reject(err);
-                let data = {id:results.insertId, title, email}
-                return resolve({data});
+                return resolve({id:results.insertId});
             }
         )
     })
@@ -42,8 +40,7 @@ models.updateActivity = async ({title, id}) => {
         db.query(`UPDATE activities SET title=? WHERE activity_id=?`, [ title, id ],
             (err, results) => {
                 if (err) return reject(err);
-                let data = {id, title}
-                return resolve({data});
+                return resolve(results.affectedRows);
             }
         )
     })
@@ -54,6 +51,7 @@ models.deleteActivity = async (id) => {
         db.query(`DELETE FROM activities WHERE activity_id=?`, [ id ],
             (err, results) => {
                 if (err) return reject(err);
+                if (results.affectedRows === 0) return reject(new Error(`Activity with ID ${id} Not Found`))
                 return resolve({results});
             }
         )

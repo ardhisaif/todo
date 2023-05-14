@@ -1,4 +1,4 @@
-function response(res, status, result = '', meta = '') {
+function response(res, status, result = '') {
     let desc = ''
 
     switch (status) {
@@ -33,12 +33,8 @@ function response(res, status, result = '', meta = '') {
 
     const results = {
         status: status,
-        message: desc,
+        message: desc ,
         data: isObject(result) ? result.data : Array.isArray(result) ? result : result
-    }
-
-    if (meta) {
-        results.meta = meta
     }
 
     res.status(status).json(results)
