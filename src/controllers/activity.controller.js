@@ -17,8 +17,6 @@ controllers.getActivityByID = async (req, res) => {
     try {
         const { id } = req.params
         const data = await models.getActivityByID(+id)
-        if (data.length === 0) throw new Error("data not found")
-
         response(res, StatusCodes.OK, data)
     } catch (error) {
         console.log(new Error(error).message)
@@ -48,7 +46,6 @@ controllers.updateActivity = async (req, res) => {
         if (!updated) throw new Error(`Activity with ID ${id} Not Found`)
         
         const data = await models.getActivityByID(+id)
-        if (data.length === 0) throw new Error("data not found")
         response(res, StatusCodes.OK, data)
     } catch (error) {
         console.log(new Error(error).message)
@@ -60,7 +57,6 @@ controllers.deleteActivity = async (req, res) => {
     try {
         const { id } = req.params
         const data = await models.deleteActivity(+id)
-        console.log(data);
         response(res, StatusCodes.OK, `activity with id ${id} successfuly deleted`)
     } catch (error) {
         console.log(new Error(error).message)

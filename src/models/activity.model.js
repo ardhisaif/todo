@@ -18,6 +18,7 @@ models.getActivityByID = async (id) => {
         db.query(`SELECT * FROM activities WHERE activity_id=?`, [ id ],
             (err, results) => {
                 if (err) return reject(err);
+                if (results.length === 0) return reject(new Error(`Activity with ID ${id} Not Found`))
                 return resolve(results[0]);
             }
         )
@@ -40,6 +41,7 @@ models.updateActivity = async ({title, id}) => {
         db.query(`UPDATE activities SET title=? WHERE activity_id=?`, [ title, id ],
             (err, results) => {
                 if (err) return reject(err);
+                if (!results.affectedRows) return reject(new Error(`Activity with ID ${id} Not Found`))
                 return resolve(results.affectedRows);
             }
         )

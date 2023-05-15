@@ -29,6 +29,7 @@ models.getTodoByID = async (id) => {
         db.query(`SELECT * FROM todos WHERE todo_id=?`, [ id ],
             (err, results) => {
                 if (err) return reject(err);
+                if (results.length === 0) return reject(new Error(`Todo with ID ${id} Not Found`))
                 return resolve(results[0]);
             }
         )

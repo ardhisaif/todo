@@ -11,7 +11,7 @@ controllers.getAllTodo = async (req, res) => {
         response(res, StatusCodes.OK, data)
     } catch (error) {
         console.log(new Error(error).message)
-        response(res, StatusCodes.BAD_REQUEST, error)
+        response(res, StatusCodes.BAD_REQUEST, new Error(error).message)
     }
 }
 
@@ -22,7 +22,7 @@ controllers.getTodoByID = async (req, res) => {
         response(res, StatusCodes.OK, data)
     } catch (error) {
         console.log(new Error(error).message)
-        response(res, StatusCodes.BAD_REQUEST, error)
+        response(res, StatusCodes.BAD_REQUEST, new Error(error).message)
     }
 }
 
@@ -30,8 +30,7 @@ controllers.addTodo = async (req, res) => {
     try {
         const { title, activity_group_id, is_active, priority } = req.body
         const myPriority = priority ? priority : "very-high"
-        const getActivity = await activity.getActivityByID(+activity_group_id)
-        if (getActivity.length === 0) throw new Error("data not found")
+        await activity.getActivityByID(+activity_group_id)
         const todoId = await models.addTodo({ title, activity_group_id, is_active, priority:myPriority })
         const data = await models.getTodoByID(todoId)
         response(res, StatusCodes.CREATED, data)
