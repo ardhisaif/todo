@@ -1,0 +1,38 @@
+version: '3.9'
+services:
+  dbsql: 
+    image: mariadb
+    container_name: mysql_container
+    restart: always
+    environment:
+        MYSQL_DATABASE: todo_list
+        MYSQL_USER: todo
+        MYSQL_PASSWORD: roots
+        MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - mydb:/var/lib/mysql
+    ports:
+      - '3307:3306'
+    networks:
+      - node_todo
+
+  app:
+    image: ardhisaif/todo:1.6
+    container_name: node_container
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - node_todo
+    ports:
+      - '3001:3002'
+    depends_on:
+      - dbsql
+    
+networks:
+  node_todo:
+    driver: bridge
+
+volumes:
+  mydb:
+
